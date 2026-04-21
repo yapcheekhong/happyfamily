@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏠 幸福家庭</title>
+<style>
+/* ═══════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════ */
+:root {
+  --cream:   #FFF8F0;
+  --tan:     #F5E6D3;
+  --brown:   #8B6347;
+  --brown-d: #5C3D2E;
+  --green:   #5BA85A;
+  --green-l: #C8E6C9;
+  --green-d: #2E7D32;
+  --pink:    #F48FB1;
+  --pink-l:  #FCE4EC;
+  --pink-d:  #C2185B;
+  --blue:    #64B5F6;
+  --blue-l:  #E3F2FD;
+  --blue-d:  #1565C0;
+  --yellow:  #FFD54F;
+  --yellow-l:#FFFDE7;
+  --purple:  #CE93D8;
+  --purple-d:#6A1B9A;
+  --orange:  #FF8A65;
+  --red:     #EF5350;
+  --sky:     #87CEEB;
+  --white:   #FFFFFF;
+  --shadow:  rgba(92,61,46,0.18);
+  --r:       16px;
+  --r-sm:    10px;
+  --r-lg:    24px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{
+  font-family:'Microsoft JhengHei','PingFang TC',Arial,sans-serif;
+  font-size:14px;
+  background:#87CEEB;
+  color:var(--brown-d);
+  user-select:none;
+}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--tan);border-radius:3px;}
+::-webkit-scrollbar-thumb{background:var(--brown);border-radius:3px;}
+
+/* ═══════════════════════════════════════
+   SCREEN MANAGER
+═══════════════════════════════════════ */
+.screen{
+  position:fixed;inset:0;
+  display:none;flex-direction:column;
+  overflow:hidden;
+}
+.screen.active{display:flex;}
+
+/* ═══════════════════════════════════════
+   ANIMATED SKY BACKGROUND
+═══════════════════════════════════════ */
+.sky-bg{
+  position:fixed;inset:0;z-index:0;
+  background:linear-gradient(180deg,#87CEEB 0%,#B0E0FF 60%,#C8E6C9 100%);
+  overflow:hidden;pointer-events:none;
+}
+.cloud{
+  position:absolute;background:rgba(255,255,255,0.85);border-radius:50px;
+  animation:cloudDrift linear infinite;
+}
+.cloud::before,.cloud::after{
+  content:'';position:absolute;background:rgba(255,255,255,0.85);border-radius:50%;
+}
+@keyframes cloudDrift{from{transform:translateX(-200px);}to{transform:translateX(110vw);}}
+
+/* Ground strip */
+.ground{
+  position:fixed;bottom:0;left:0;right:0;height:80px;z-index:1;
+  background:linear-gradient(180deg,#8BC34A 0%,#558B2F 100%);
+}
+.ground::before{
+  content:'';position:absolute;top:-12px;left:0;right:0;height:20px;
+  background:radial-gradient(ellipse 40px 12px at 50% 100%,#AED581 60%,transparent 100%);
+  background-size:80px 20px;
+}
+
+/* ═══════════════════════════════════════
+   ── SCREEN 1: MAIN MENU ──
+═══════════════════════════════════════ */
+#screen-menu{
+  align-items:center;justify-content:center;
+  gap:0;z-index:10;
+}
+.menu-house{
+  font-size:80px;animation:houseBob 2.5s ease-in-out infinite;
+  filter:drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+  margin-bottom:-10px;z-index:2;position:relative;
+}
+@keyframes houseBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.menu-card{
+  background:rgba(255,255,255,0.96);
+  border-radius:var(--r-lg);
+  padding:28px 36px 32px;
+  text-align:center;
+  box-shadow:0 12px 48px var(--shadow);
+  border:3px solid var(--tan);
+  width:360px;max-width:92vw;
+  position:relative;z-index:2;
+}
+.menu-title{
+  font-size:28px;font-weight:900;
+  background:linear-gradient(135deg,var(--green-d),var(--blue-d));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:4px;
+}
+.menu-sub{font-size:13px;color:var(--brown);margin-bottom:20px;}
+.menu-btn{
+  display:block;width:100%;
+  padding:13px 0;margin-bottom:10px;
+  border-radius:99px;border:none;
+  font-size:16px;font-weight:800;
+  cursor:pointer;
+  transition:transform .14s,box-shadow .14s;
+  letter-spacing:.5px;
+}
+.menu-btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px var(--shadow);}
+.btn-play{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;}
+.btn-howto{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;}
+.btn-guide{background:linear-gradient(135deg,var(--purple),var(--purple-d));color:#fff;}
+
+/* Diff row */
+.diff-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
+.diff-btn{
+  padding:7px 16px;border-radius:99px;
+  border:2.5px solid var(--tan);
+  background:var(--cream);font-size:13px;font-weight:700;
+  color:var(--brown);cursor:pointer;
+  transition:all .15s;
+}
+.diff-btn.active{background:var(--green);border-color:var(--green-d);color:#fff;}
+.diff-btn:hover:not(.active){background:var(--green-l);border-color:var(--green);}
+
+/* Characters on menu */
+.menu-chars{
+  display:flex;justify-content:center;gap:16px;
+  margin-bottom:16px;
+}
+.menu-char{font-size:36px;animation:charBob 2s ease-in-out infinite;}
+.menu-char:nth-child(2){animation-delay:.3s;}
+.menu-char:nth-child(3){animation-delay:.6s;}
+.menu-char:nth-child(4){animation-delay:.9s;}
+@keyframes charBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+
+/* ═══════════════════════════════════════
+   ── SCREEN 2: HOW TO PLAY ──
+═══════════════════════════════════════ */
+#screen-howto{align-items:center;justify-content:center;z-index:10;}
+.howto-card{
+  background:rgba(255,255,255,0.97);
+  border-radius:var(--r-lg);padding:24px 28px;
+  width:480px;max-width:94vw;max-height:88vh;
+  overflow-y:auto;
+  box-shadow:0 12px 48px var(--shadow);
+  border:3px solid var(--tan);
+  position:relative;z-index:2;
+}
+.howto-card h2{font-size:20px;color:var(--green-d);margin-bottom:14px;text-align:center;}
+.howto-step{
+  display:flex;gap:12px;align-items:flex-start;
+  margin-bottom:14px;padding:10px 12px;
+  background:var(--cream);border-radius:var(--r-sm);
+  border-left:4px solid var(--green);
+}
+.howto-num{
+  background:var(--green);color:#fff;
+  border-radius:50%;width:28px;height:28px;min-width:28px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;
+}
+.howto-step p{font-size:13px;line-height:1.6;color:var(--brown-d);}
+.howto-step strong{color:var(--green-d);}
+
+/* ═══════════════════════════════════════
+   ── SCREEN 3: SKILL GUIDE ──
+═══════════════════════════════════════ */
+#screen-guide{align-items:center;justify-content:center;z-index:10;}
+.guide-card{
+  background:rgba(255,255,255,0.97);
+  border-radius:var(--r-lg);padding:22px 24px;
+  width:560px;max-width:96vw;max-height:88vh;
+  overflow-y:auto;
+  box-shadow:0 12px 48px var(--shadow);
+  border:3px solid var(--tan);
+  position:relative;z-index:2;
+}
+.guide-card h2{font-size:20px;color:var(--purple-d);margin-bottom:14px;text-align:center;}
+.skill-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:var(--r-sm);
+  margin-bottom:6px;background:var(--cream);
+  border-left:4px solid var(--purple);
+}
+.skill-icon-big{font-size:22px;width:32px;text-align:center;}
+.skill-info{flex:1;}
+.skill-name-row{font-weight:800;font-size:14px;color:var(--purple-d);}
+.skill-desc-row{font-size:12px;color:var(--brown);margin-top:2px;line-height:1.4;}
+.skill-prof{font-size:11px;background:var(--purple);color:#fff;border-radius:99px;padding:1px 8px;margin-left:6px;}
+
+/* ═══════════════════════════════════════
+   ── SCREEN 4: GAME ──
+═══════════════════════════════════════ */
+#screen-game{z-index:10;overflow:hidden;}
+
+/* Top bar */
+#topbar{
+  background:rgba(255,255,255,0.95);
+  border-bottom:2px solid var(--tan);
+  padding:8px 14px;
+  display:flex;align-items:center;gap:10px;
+  flex-shrink:0;
+  box-shadow:0 2px 10px var(--shadow);
+  position:relative;z-index:20;
+}
+#topbar-title{font-size:16px;font-weight:900;color:var(--green-d);}
+#topbar-turn{
+  background:var(--green);color:#fff;
+  border-radius:99px;padding:3px 12px;
+  font-size:12px;font-weight:700;
+}
+#topbar-right{margin-left:auto;display:flex;gap:6px;}
+.tb-btn{
+  padding:5px 12px;border-radius:99px;border:2px solid var(--tan);
+  background:var(--cream);font-size:12px;font-weight:700;
+  color:var(--brown-d);cursor:pointer;
+  transition:all .14s;
+}
+.tb-btn:hover{background:var(--tan);}
+
+/* Main game layout */
+#game-layout{
+  flex:1;display:flex;gap:0;overflow:hidden;
+  position:relative;
+}
+
+/* players-panel styles moved to layout section above */
+
+/* ─── NEW LAYOUT: vertical stack ─── */
+#game-layout{
+  flex:1;display:flex;flex-direction:column;
+  overflow:hidden;position:relative;
+}
+
+/* Players row — TOP, horizontal */
+#players-panel{
+  background:rgba(255,255,255,0.92);
+  border-bottom:2px solid var(--tan);
+  padding:7px 10px;
+  display:flex;flex-direction:row;gap:8px;
+  flex-shrink:0;overflow-x:auto;
+}
+.pcard{
+  background:var(--cream);border-radius:var(--r);
+  padding:7px 10px;border:2.5px solid var(--tan);
+  transition:border-color .2s,box-shadow .2s;
+  position:relative;overflow:hidden;
+  flex:1 1 160px;min-width:150px;max-width:220px;
+}
+.pcard.myturn{
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(91,168,90,0.25);
+}
+.pcard.myturn::before{
+  content:'▶';position:absolute;left:-2px;top:50%;transform:translateY(-50%);
+  color:var(--green);font-size:14px;font-weight:900;
+}
+.pcard-top{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.pcard-avatar{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--green-l);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;border:2px solid var(--green);
+  flex-shrink:0;
+}
+.pcard-name{font-size:13px;font-weight:800;color:var(--brown-d);}
+.pcard-score{
+  background:var(--green);color:#fff;
+  border-radius:99px;padding:1px 8px;
+  font-size:12px;font-weight:800;
+  display:inline-block;margin-top:1px;
+}
+.pcard-hand{font-size:12px;color:var(--brown);margin-top:2px;}
+.pcard-families{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;}
+.fam-pill{
+  font-size:11px;border-radius:99px;
+  padding:2px 7px;font-weight:700;
+  cursor:help;background:var(--purple);color:#fff;
+}
+.fam-pill.used{background:#ccc;color:#888;text-decoration:line-through;}
+.pcard-fx{font-size:11px;color:var(--red);font-weight:700;margin-top:2px;}
+
+/* Lower area: center + log sidebar */
+#lower-area{
+  flex:1;display:flex;overflow:hidden;
+}
+
+/* Center column */
+#center-area{
+  flex:1;display:flex;flex-direction:column;
+  overflow:hidden;min-width:0;
+  border-right:2px solid var(--tan);
+}
+
+/* Log sidebar — RIGHT */
+#log-sidebar{
+  width:280px;flex-shrink:0;
+  background:rgba(255,255,255,0.88);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+#log-sidebar-header{
+  padding:8px 12px;
+  background:rgba(255,255,255,0.95);
+  border-bottom:2px solid var(--tan);
+  font-size:13px;font-weight:800;color:var(--brown-d);
+  display:flex;align-items:center;gap:6px;
+  flex-shrink:0;
+}
+
+/* Your turn banner */
+#turn-banner{
+  background:linear-gradient(90deg,var(--yellow),var(--orange));
+  color:var(--brown-d);padding:7px 16px;
+  font-size:14px;font-weight:800;
+  display:none;align-items:center;gap:8px;
+  border-bottom:2px solid var(--brown);
+  animation:bannerPulse 1.5s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes bannerPulse{0%,100%{opacity:1;}50%{opacity:.85;};}
+#turn-banner.visible{display:flex;}
+
+/* Hand area */
+#hand-area{
+  background:rgba(255,255,255,0.9);
+  border-bottom:2px solid var(--tan);
+  flex-shrink:0;
+}
+#hand-header{
+  padding:6px 14px 4px;
+  font-size:13px;font-weight:800;color:var(--brown-d);
+  display:flex;align-items:center;gap:8px;
+}
+#hand-count-badge{
+  background:var(--green);color:#fff;
+  border-radius:99px;padding:1px 8px;font-size:12px;font-weight:700;
+}
+#hand-cards{
+  display:flex;flex-wrap:nowrap;
+  gap:8px;padding:8px 14px 10px;
+  overflow-x:auto;min-height:130px;
+  align-items:flex-end;
+}
+
+/* ─── CARD ─── */
+.card{
+  width:80px;min-width:80px;height:115px;
+  border-radius:12px;
+  position:relative;cursor:pointer;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
+  flex-shrink:0;overflow:visible;
+}
+.card:hover{transform:translateY(-14px) scale(1.06);z-index:20;}
+.card.protected{filter:drop-shadow(0 0 6px gold);}
+.card-face{
+  width:100%;height:100%;border-radius:12px;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 4px 14px rgba(0,0,0,0.22),inset 0 1px 0 rgba(255,255,255,.5);
+  border:2px solid rgba(255,255,255,0.6);
+}
+.card-top{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;
+  padding:4px 4px 2px;
+}
+.card-emoji{font-size:26px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2));}
+.card-prof-name{
+  font-size:12px;font-weight:900;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.4);
+  text-align:center;line-height:1.1;
+  padding:0 3px;
+}
+.card-bottom{
+  padding:4px 4px 5px;
+  text-align:center;
+  border-top:1px solid rgba(255,255,255,0.4);
+  background:rgba(0,0,0,0.45);
+}
+.card-member-name{
+  font-size:12px;font-weight:900;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.4);
+  line-height:1.1;
+}
+.card-member-emoji{font-size:13px;}
+.card-lock{
+  position:absolute;top:-6px;right:-6px;
+  background:#FFD700;border-radius:50%;
+  width:20px;height:20px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;z-index:5;
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Dealing animation */
+@keyframes dealIn{
+  from{opacity:0;transform:translateY(40px) scale(.7) rotate(-8deg);}
+  to{opacity:1;transform:none;}
+}
+.card-deal{animation:dealIn .35s cubic-bezier(.34,1.56,.64,1) both;}
+
+/* Card fly animation */
+.card-fly{
+  position:fixed;z-index:9999;pointer-events:none;
+  transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s;
+}
+
+/* Action area */
+#action-area{
+  padding:10px 14px;
+  background:rgba(255,255,255,0.88);
+  border-bottom:2px solid var(--tan);
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  flex-shrink:0;
+}
+.sel-label{font-size:12px;font-weight:700;color:var(--brown);}
+.cute-sel{
+  padding:6px 10px;border-radius:99px;
+  border:2.5px solid var(--tan);
+  background:var(--cream);font-size:13px;
+  color:var(--brown-d);outline:none;cursor:pointer;
+  transition:border-color .15s;
+}
+.cute-sel:focus{border-color:var(--green);}
+.cute-sel:disabled{opacity:.5;cursor:not-allowed;}
+.gbtn{
+  padding:8px 16px;border:none;border-radius:99px;
+  font-size:13px;font-weight:800;cursor:pointer;
+  transition:transform .14s,box-shadow .14s,opacity .14s;
+  letter-spacing:.3px;
+}
+.gbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 14px var(--shadow);}
+.gbtn:disabled{opacity:.45;cursor:not-allowed;}
+.gbtn:active:not(:disabled){transform:translateY(0);}
+.btn-ask{background:linear-gradient(135deg,#66BB6A,#388E3C);color:#fff;}
+.btn-end{background:linear-gradient(135deg,var(--yellow),#F57C00);color:var(--brown-d);}
+.btn-resign{background:linear-gradient(135deg,#EF9A9A,#C62828);color:#fff;}
+
+/* Skill buttons */
+#skill-bar{
+  padding:8px 14px;
+  background:rgba(248,235,255,0.95);
+  border-bottom:2px solid #D1B2FF;
+  display:none;flex-wrap:wrap;gap:6px;align-items:center;
+  flex-shrink:0;
+}
+#skill-bar.visible{display:flex;}
+.skill-bar-label{font-size:12px;font-weight:800;color:var(--purple-d);}
+.sbtn{
+  padding:6px 13px;border-radius:99px;
+  background:linear-gradient(135deg,var(--purple),var(--purple-d));
+  color:#fff;border:none;cursor:pointer;
+  font-size:12px;font-weight:700;
+  display:flex;align-items:center;gap:5px;
+  transition:transform .14s,box-shadow .14s;
+  position:relative;
+}
+.sbtn:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(106,27,154,.3);}
+.sbtn .stt{
+  display:none;position:absolute;bottom:110%;left:50%;
+  transform:translateX(-50%);
+  background:var(--brown-d);color:#fff;
+  font-size:11px;padding:4px 8px;border-radius:6px;
+  white-space:nowrap;z-index:50;pointer-events:none;min-width:160px;
+  text-align:center;
+}
+.sbtn:hover .stt{display:block;}
+
+/* Status msg */
+#status-bar{
+  padding:7px 14px;
+  background:rgba(255,253,231,0.97);
+  border-bottom:2px solid var(--yellow);
+  font-size:13px;font-weight:700;
+  color:var(--brown-d);
+  display:flex;align-items:center;gap:6px;
+  flex-shrink:0;min-height:36px;
+}
+
+/* Log panel */
+#log-panel{
+  flex:1;
+  overflow-y:auto;padding:10px 12px;
+  font-size:13px;line-height:1.55;
+}
+#log-panel p{margin:2px 0;}
+.log-div{border:none;border-top:1px dashed var(--tan);margin:5px 0;}
+.log-turn{text-align:center;font-size:12px;color:var(--brown);margin:2px 0;}
+
+/* ─── SKILL PANEL (right sidebar) ─── */
+#skills-panel{
+  width:0;flex-shrink:0;overflow:hidden;
+  background:rgba(255,255,255,0.94);
+  border-left:2px solid var(--tan);
+  transition:width .3s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+#skills-panel.open{width:200px;}
+#sp-header{
+  padding:10px 12px;font-size:13px;font-weight:800;
+  color:var(--purple-d);border-bottom:1px solid var(--tan);
+  flex-shrink:0;
+}
+#sp-list{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:6px;}
+.sp-btn{
+  padding:8px 10px;border-radius:var(--r-sm);border:none;
+  background:linear-gradient(135deg,var(--purple),var(--purple-d));
+  color:#fff;cursor:pointer;text-align:left;
+  font-size:12px;font-weight:700;
+  display:flex;align-items:center;gap:6px;
+  transition:transform .14s,opacity .14s;
+  white-space:normal;line-height:1.3;
+}
+.sp-btn:hover{transform:scale(1.03);}
+.sp-icon{font-size:18px;}
+
+/* ═══════════════════════════════════════
+   OVERLAYS & MODALS
+═══════════════════════════════════════ */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(50,30,10,.5);
+  display:none;justify-content:center;align-items:center;
+  z-index:1000;backdrop-filter:blur(4px);
+}
+.overlay.visible{display:flex;}
+.modal{
+  background:#fff;border-radius:var(--r-lg);
+  padding:24px 26px;width:480px;max-width:94vw;
+  box-shadow:0 16px 60px rgba(0,0,0,.3);
+  border:3px solid var(--tan);
+  max-height:88vh;overflow-y:auto;
+  text-align:center;
+  position:relative;
+}
+.modal h3{font-size:18px;color:var(--green-d);margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--brown);margin-bottom:14px;}
+.modal-opts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0;}
+.mopt{
+  padding:9px 16px;border-radius:99px;
+  background:var(--green-l);border:2px solid var(--green);
+  color:var(--green-d);font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .14s;
+}
+.mopt:hover{background:var(--green);color:#fff;transform:scale(1.05);}
+.mopt-card{
+  width:80px;height:115px;border-radius:12px;
+  overflow:hidden;cursor:pointer;
+  transition:transform .16s;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+  display:flex;flex-direction:column;border:none;padding:0;
+}
+.mopt-card:hover{transform:scale(1.1) translateY(-4px);}
+.close-btn{
+  margin-top:12px;padding:8px 22px;
+  background:var(--tan);color:var(--brown-d);
+  border:none;border-radius:99px;
+  cursor:pointer;font-size:13px;font-weight:700;
+}
+
+/* ─── END GAME MODAL ─── */
+#end-overlay{z-index:2000;}
+#end-modal{
+  background:linear-gradient(160deg,#FFFDE7,#F1F8E9);
+  border:3px solid var(--yellow);
+}
+.end-trophy{font-size:72px;display:block;margin-bottom:6px;animation:trophySpin .6s ease-out;}
+@keyframes trophySpin{from{transform:rotate(-20deg)scale(.6);}to{transform:none;}}
+#end-modal h2{font-size:22px;color:var(--green-d);margin-bottom:16px;}
+.srow{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 14px;margin:4px 0;border-radius:var(--r-sm);
+  font-size:14px;background:rgba(255,255,255,.7);
+}
+.srow.winner{background:var(--yellow-l);font-weight:900;font-size:15px;border:2px solid var(--yellow);}
+.stats-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0;}
+.sbox{background:rgba(255,255,255,.8);border-radius:var(--r-sm);padding:10px;}
+.sbox strong{display:block;font-size:22px;color:var(--green-d);font-weight:900;}
+.sbox span{font-size:12px;color:var(--brown);}
+#play-again{
+  padding:12px 36px;
+  background:linear-gradient(135deg,var(--green),var(--green-d));
+  color:#fff;border:none;border-radius:99px;
+  font-size:16px;font-weight:900;
+  cursor:pointer;box-shadow:0 6px 20px rgba(46,125,50,.3);
+  transition:transform .15s;margin-top:10px;
+}
+#play-again:hover{transform:translateY(-3px);}
+
+/* ─── TOAST ─── */
+#toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(30px);
+  background:rgba(44,28,14,.88);color:#fff;
+  padding:10px 22px;border-radius:99px;
+  font-size:13px;font-weight:700;
+  opacity:0;transition:opacity .3s,transform .3s;
+  z-index:9000;pointer-events:none;
+  white-space:nowrap;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ─── SKILL FLASH ─── */
+#skill-flash{
+  position:fixed;inset:0;z-index:8000;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;opacity:0;
+  transition:opacity .2s;
+}
+#skill-flash.show{opacity:1;}
+.sf-inner{
+  background:rgba(255,255,255,.97);
+  border-radius:var(--r-lg);padding:24px 36px;
+  text-align:center;
+  box-shadow:0 12px 48px rgba(0,0,0,.35);
+  border:4px solid var(--purple);
+  transform:scale(.6);
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+#skill-flash.show .sf-inner{transform:scale(1);}
+.sf-emoji{font-size:56px;display:block;margin-bottom:8px;}
+.sf-name{font-size:20px;font-weight:900;color:var(--purple-d);}
+.sf-desc{font-size:13px;color:var(--brown);margin-top:4px;}
+
+/* ─── YOUR TURN ANIMATION ─── */
+#your-turn-anim{
+  position:fixed;inset:0;z-index:7000;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;opacity:0;
+  transition:opacity .2s;
+}
+#your-turn-anim.show{opacity:1;}
+.yta-inner{
+  background:linear-gradient(135deg,var(--yellow),var(--orange));
+  border-radius:var(--r-lg);padding:18px 40px;
+  font-size:24px;font-weight:900;color:var(--brown-d);
+  box-shadow:0 12px 40px rgba(0,0,0,.25);
+  border:3px solid var(--brown);
+  transform:scale(.5) translateY(40px);
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+#your-turn-anim.show .yta-inner{transform:scale(1) translateY(0);}
+
+/* ─── CARD TIP POPUP ─── */
+#card-tip-overlay{position:fixed;inset:0;z-index:500;display:none;}
+#card-tip{
+  position:absolute;background:#fff;
+  border:2.5px solid var(--tan);border-radius:var(--r);
+  padding:12px 14px;max-width:200px;
+  box-shadow:0 8px 24px var(--shadow);
+  font-size:13px;
+}
+#card-tip h4{color:var(--green-d);margin-bottom:6px;font-size:14px;}
+#card-tip .sk{color:var(--purple-d);font-weight:800;}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media(max-width:700px){
+  #log-sidebar{width:200px;}
+  .card{width:66px;min-width:66px;height:100px;}
+  .card-emoji{font-size:20px;}
+  .card-prof-name{font-size:10px;}
+  .card-member-name{font-size:10px;}
+}
+@media(max-width:480px){
+  #log-sidebar{display:none;}
+  .pcard{min-width:120px;}
+  .pcard-avatar{width:26px;height:26px;font-size:14px;}
+  .pcard-name{font-size:12px;}
+}
+</style>
+</head>
+<body>
+
+<!-- Decorative background -->
+<div class="sky-bg" id="sky-bg"></div>
+<div class="ground"></div>
+
+<!-- ══════════════════════════════════
+  SCREEN 1: MAIN MENU
+══════════════════════════════════ -->
+<div class="screen active" id="screen-menu">
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding-top:40px;">
+    <div class="menu-house">🏠</div>
+    <div class="menu-card">
+      <div class="menu-chars">
+        <span class="menu-char">👨</span>
+        <span class="menu-char">👩</span>
+        <span class="menu-char">👦</span>
+        <span class="menu-char">👧</span>
+      </div>
+      <div class="menu-title">幸福家庭</div>
+      <div class="menu-sub">技能戰略卡牌遊戲 · 四人同樂</div>
+      <div class="diff-row">
+        <button class="diff-btn active" data-diff="easy" onclick="setDiff(this)">🌿 入門</button>
+        <button class="diff-btn" data-diff="normal" onclick="setDiff(this)">⚡ 標準</button>
+        <button class="diff-btn" data-diff="hard" onclick="setDiff(this)">🔥 困難</button>
+      </div>
+      <button class="menu-btn btn-play" onclick="game.startGame()">🎮 開始遊戲</button>
+      <button class="menu-btn btn-howto" onclick="showScreen('howto')">📖 遊戲說明</button>
+      <button class="menu-btn btn-guide" onclick="showScreen('guide')">🔮 技能圖鑑</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SCREEN 2: HOW TO PLAY
+══════════════════════════════════ -->
+<div class="screen" id="screen-howto">
+  <div style="position:relative;z-index:2;display:flex;justify-content:center;align-items:center;height:100%;padding:20px;">
+    <div class="howto-card">
+      <h2>📖 遊戲說明</h2>
+      <div class="howto-step">
+        <div class="howto-num">1</div>
+        <p>每人發到相同數量的卡牌，每張卡牌代表一個<strong>職業家庭的成員</strong>（爸爸、媽媽、兒子、女兒）。</p>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num">2</div>
+        <p>輪到你時，從對手中選一位，<strong>點名索取</strong>指定職業的指定成員。你只能索取自己手中已有同職業的成員！</p>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num">3</div>
+        <p>如果<strong>成功索取</strong>，你可以繼續索牌。如果<strong>失敗</strong>，換下一位玩家。</p>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num">4</div>
+        <p>集齊同職業的<strong>四張牌</strong>（爸媽子女），即完成一組「幸福家庭」，獲得一分。</p>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num">5</div>
+        <p>完成家庭後，會解鎖該職業的<strong>特殊技能</strong>，可在自己回合使用！技能各有奇效，善加利用。</p>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num">6</div>
+        <p>當所有家庭都被集齊，<strong>得分最高</strong>的玩家獲勝！若分數相同則平局。</p>
+      </div>
+      <button class="menu-btn btn-play" style="margin-top:14px;" onclick="showScreen('menu')">← 返回主選單</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SCREEN 3: SKILL GUIDE
+══════════════════════════════════ -->
+<div class="screen" id="screen-guide">
+  <div style="position:relative;z-index:2;display:flex;justify-content:center;align-items:center;height:100%;padding:20px;">
+    <div class="guide-card">
+      <h2>🔮 職業技能圖鑑</h2>
+      <div id="guide-list"></div>
+      <button class="menu-btn btn-guide" style="margin-top:14px;" onclick="showScreen('menu')">← 返回主選單</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SCREEN 4: GAME
+══════════════════════════════════ -->
+<div class="screen" id="screen-game">
+  <!-- Top bar -->
+  <div id="topbar">
+    <div id="topbar-title">🏠 幸福家庭</div>
+    <div id="topbar-turn">第 0 回合</div>
+    <div id="topbar-right">
+      <button class="tb-btn" onclick="showScreen('guide')">🔮 技能</button>
+      <button class="tb-btn" onclick="showScreen('menu')">🏠 主選單</button>
+    </div>
+  </div>
+
+  <!-- Your turn animation -->
+  <div id="your-turn-anim">
+    <div class="yta-inner">⭐ 輪到你了！</div>
+  </div>
+
+  <!-- Main layout: vertical stack -->
+  <div id="game-layout">
+
+    <!-- TOP: Players row -->
+    <div id="players-panel"></div>
+
+    <!-- LOWER: center + log sidebar -->
+    <div id="lower-area">
+
+      <!-- Center: hand + controls + status -->
+      <div id="center-area">
+        <div id="turn-banner">⭐ 輪到你了！選擇行動吧！</div>
+
+        <!-- Hand -->
+        <div id="hand-area">
+          <div id="hand-header">
+            🃏 你的手牌
+            <span id="hand-count-badge">0</span>
+          </div>
+          <div id="hand-cards"></div>
+        </div>
+
+        <!-- Skills bar -->
+        <div id="skill-bar">
+          <span class="skill-bar-label">🔮 技能：</span>
+          <div id="skill-btns-row" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+        </div>
+
+        <!-- Action controls -->
+        <div id="action-area">
+          <span class="sel-label">🎯 對象</span>
+          <select id="sel-target" class="cute-sel" disabled></select>
+          <span class="sel-label">💼 職業</span>
+          <select id="sel-prof" class="cute-sel" disabled></select>
+          <span class="sel-label">👤 成員</span>
+          <select id="sel-member" class="cute-sel" disabled></select>
+          <button id="ask-btn" class="gbtn btn-ask" onclick="game.handleAsk()" disabled>🙋 索取</button>
+          <button id="end-btn" class="gbtn btn-end" onclick="game.nextTurn()" disabled>⏭ 結束回合</button>
+          <button id="resign-btn" class="gbtn btn-resign" onclick="game.resign()" style="display:none;">🏳 認輸</button>
+        </div>
+
+        <!-- Status -->
+        <div id="status-bar">準備開始…</div>
+      </div>
+
+      <!-- RIGHT: Game log sidebar -->
+      <div id="log-sidebar">
+        <div id="log-sidebar-header">📜 遊戲記錄</div>
+        <div id="log-panel"></div>
+      </div>
+
+    </div><!-- /lower-area -->
+
+  </div><!-- /game-layout -->
+</div><!-- /screen-game -->
+
+<!-- ══════════════════════════════════
+  OVERLAYS
+══════════════════════════════════ -->
+<!-- Generic modal -->
+<div class="overlay" id="modal-overlay">
+  <div class="modal" id="modal-box">
+    <h3 id="modal-title"></h3>
+    <p  id="modal-desc"></p>
+    <div id="modal-body"></div>
+    <div class="modal-opts" id="modal-opts"></div>
+    <button class="close-btn" onclick="closeModal()">✕ 關閉</button>
+  </div>
+</div>
+
+<!-- End game -->
+<div class="overlay" id="end-overlay">
+  <div class="modal" id="end-modal">
+    <span class="end-trophy" id="end-trophy">🏆</span>
+    <h2 id="end-title">遊戲結束！</h2>
+    <div id="end-scores"></div>
+    <div class="stats-g" id="end-stats"></div>
+    <button id="play-again" onclick="game.restartToMenu()">🔄 再玩一次</button>
+  </div>
+</div>
+
+<!-- Skill flash -->
+<div id="skill-flash">
+  <div class="sf-inner">
+    <span class="sf-emoji" id="sf-emoji"></span>
+    <div class="sf-name" id="sf-name"></div>
+    <div class="sf-desc" id="sf-desc"></div>
+  </div>
+</div>
+
+<!-- Card tip -->
+<div id="card-tip-overlay" onclick="this.style.display='none'">
+  <div id="card-tip" onclick="event.stopPropagation()"></div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const PROFESSIONS=['牧師','綁匪','警察','律師','消防員','議員','社工','記者','保鏢','圖書管理員','總裁','稅務師','法官','醫生','厨師','明星'];
+const MEMBERS=['爸爸','媽媽','兒子','女兒'];
+const MEMBER_EMOJI={'爸爸':'👨','媽媽':'👩','兒子':'👦','女兒':'👧'};
+const MEMBER_COLOR={'爸爸':'#1A237E','媽媽':'#880E4F','兒子':'#1B5E20','女兒':'#4A148C'};
+
+const PROF={
+  '牧師':     {g:'linear-gradient(150deg,#FF8F00,#FFD54F)',icon:'⛪',tc:'#4E2B00'},
+  '綁匪':     {g:'linear-gradient(150deg,#B71C1C,#EF5350)',icon:'🔫',tc:'#fff'},
+  '警察':     {g:'linear-gradient(150deg,#0D47A1,#42A5F5)',icon:'👮',tc:'#fff'},
+  '律師':     {g:'linear-gradient(150deg,#4A148C,#CE93D8)',icon:'⚖️',tc:'#fff'},
+  '消防員':   {g:'linear-gradient(150deg,#BF360C,#FF7043)',icon:'🚒',tc:'#fff'},
+  '議員':     {g:'linear-gradient(150deg,#880E4F,#F48FB1)',icon:'🏛️',tc:'#fff'},
+  '社工':     {g:'linear-gradient(150deg,#1B5E20,#66BB6A)',icon:'🤝',tc:'#fff'},
+  '記者':     {g:'linear-gradient(150deg,#004D40,#26A69A)',icon:'📰',tc:'#fff'},
+  '保鏢':     {g:'linear-gradient(150deg,#212121,#616161)',icon:'🕶️',tc:'#fff'},
+  '圖書管理員':{g:'linear-gradient(150deg,#3E2723,#A1887F)',icon:'📚',tc:'#fff'},
+  '總裁':     {g:'linear-gradient(150deg,#E65100,#FFB300)',icon:'👔',tc:'#3E1A00'},
+  '稅務師':   {g:'linear-gradient(150deg,#1A237E,#7986CB)',icon:'💼',tc:'#fff'},
+  '法官':     {g:'linear-gradient(150deg,#33691E,#9CCC65)',icon:'🔨',tc:'#1A3A00'},
+  '醫生':     {g:'linear-gradient(150deg,#006064,#4DD0E1)',icon:'🩺',tc:'#003A3D'},
+  '厨師':     {g:'linear-gradient(150deg,#37474F,#90A4AE)',icon:'👨‍🍳',tc:'#fff'},
+  '明星':     {g:'linear-gradient(150deg,#C2185B,#F06292)',icon:'⭐',tc:'#fff'},
+};
+
+const SKILLS={
+  '法官':     {name:'最終裁決', desc:'移除指定對手一組已完成家庭。',         type:'target_player_family_remove'},
+  '明星':     {name:'一呼百應', desc:'向所有對手索取指定職業的所有牌。',     type:'ask_all_prof'},
+  '總裁':     {name:'停業整頓', desc:'所有對手禁止行動兩回合。',             type:'global_debuff_skip'},
+  '警察':     {name:'人贓並獲', desc:'查看對手三張牌並奪取一張。',           type:'target_peek_steal'},
+  '綁匪':     {name:'人質勒索', desc:'隨機偷取指定對手一張牌。',             type:'target_steal_random'},
+  '律師':     {name:'法律保護', desc:'保護一張手牌不被索取。',               type:'self_protect_card'},
+  '消防員':   {name:'英勇滅火', desc:'取消指定對手的一個可用技能。',         type:'target_player_family_disable'},
+  '議員':     {name:'地方自治', desc:'對手兩回合內不能對你索牌。',           type:'self_buff_immune_ask'},
+  '社工':     {name:'家庭重置', desc:'回收所有對手手牌並重新分配。',         type:'global_reshuffle'},
+  '記者':     {name:'專題報導', desc:'查看每位對手的一張隨機牌。',           type:'peek_all_random'},
+  '保鏢':     {name:'忠誠守衛', desc:'兩回合內免疫技能攻擊。',              type:'self_buff_immune_skill'},
+  '圖書管理員':{name:'資料彙整', desc:'向所有對手各索取指定成員一張。',     type:'ask_all_member'},
+  '稅務師':   {name:'稅務查核', desc:'每位對手各交一張牌給你。',             type:'steal_all_random'},
+  '醫生':     {name:'妙手回春', desc:'恢復自己已使用的一個技能。',           type:'self_restore_skill'},
+  '厨師':     {name:'美食誘惑', desc:'奪取對手一組已完成家庭（含積分）。',  type:'target_steal_family'},
+  '牧師':     {name:'愛與和平', desc:'所有對手不能使用技能兩回合。',         type:'global_debuff_noskill'},
+};
+const EFFECT_DUR={skipTurn:2,cantAskMe:2,cantUseSkill:2,immuneSkill:2};
+
+let difficulty='easy';
+
+/* ── Screen management ── */
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+function setDiff(btn){
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  difficulty=btn.dataset.diff;
+}
+
+/* ── Populate guide screen ── */
+(function buildGuide(){
+  const list=document.getElementById('guide-list');
+  PROFESSIONS.forEach(p=>{
+    const sk=SKILLS[p];
+    const div=document.createElement('div');
+    div.className='skill-row';
+    div.innerHTML=`
+      <div class="skill-icon-big">${PROF[p].icon}</div>
+      <div class="skill-info">
+        <div class="skill-name-row">${sk.name}<span class="skill-prof">${p}</span></div>
+        <div class="skill-desc-row">${sk.desc}</div>
+      </div>`;
+    list.appendChild(div);
+  });
+})();
+
+/* ── Build clouds ── */
+(function buildClouds(){
+  const sky=document.getElementById('sky-bg');
+  for(let i=0;i<6;i++){
+    const c=document.createElement('div');
+    c.className='cloud';
+    const h=Math.random()*30+12, w=h*2.5;
+    const top=Math.random()*40+5;
+    const dur=Math.random()*40+30;
+    const delay=Math.random()*-60;
+    c.style.cssText=`height:${h}px;width:${w}px;top:${top}%;animation-duration:${dur}s;animation-delay:${delay}s;`;
+    c.style.before=`width:${h*1.2}px;height:${h*1.2}px;top:${-h*.5}px;left:${w*.2}px;`;
+    sky.appendChild(c);
+  }
+})();
+
+/* ── Close modal ── */
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('visible'); }
+
+/* ── Toast ── */
+let toastTimer;
+function showToast(msg,dur=2200){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+/* ── Skill flash ── */
+function flashSkill(prof,dur=1400){
+  const el=document.getElementById('skill-flash');
+  document.getElementById('sf-emoji').textContent=PROF[prof]?.icon||'✨';
+  document.getElementById('sf-name').textContent=SKILLS[prof]?.name||prof;
+  document.getElementById('sf-desc').textContent=SKILLS[prof]?.desc||'';
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+/* ── Your-turn pop ── */
+function showYourTurnAnim(){
+  const el=document.getElementById('your-turn-anim');
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),1400);
+}
+
+/* ══════════════════════════════════════
+   AUDIO ENGINE (Web Audio API — no files needed)
+══════════════════════════════════════ */
+const Audio={
+  ctx:null,
+  init(){
+    if(this.ctx) return;
+    try{ this.ctx=new(window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+  },
+  _play(freq,type,dur,vol=0.3,delay=0){
+    if(!this.ctx) return;
+    const o=this.ctx.createOscillator();
+    const g=this.ctx.createGain();
+    o.connect(g); g.connect(this.ctx.destination);
+    o.type=type; o.frequency.value=freq;
+    const t=this.ctx.currentTime+delay;
+    g.gain.setValueAtTime(vol,t);
+    g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.start(t); o.stop(t+dur+0.05);
+  },
+  flip(){ this.init(); this._play(440,'sine',.08,.2); this._play(660,'sine',.08,.15,.08); },
+  success(){
+    this.init();
+    [523,659,784,1047].forEach((f,i)=>this._play(f,'sine',.18,.25,i*.08));
+  },
+  fail(){ this.init(); this._play(200,'sawtooth',.3,.2); this._play(150,'sawtooth',.3,.15,.15); },
+  score(){
+    this.init();
+    [523,659,784,1047,1319].forEach((f,i)=>this._play(f,'triangle',.22,.3,i*.07));
+    setTimeout(()=>{ [1319,1047,784].forEach((f,i)=>this._play(f,'triangle',.18,.2,i*.07)); },450);
+  },
+  skill(){ this.init(); [800,1000,1200,800].forEach((f,i)=>this._play(f,'square',.1,.18,i*.06)); },
+  steal(){ this.init(); this._play(300,'sawtooth',.4,.25); this._play(200,'sawtooth',.3,.2,.2); },
+  win(){
+    this.init();
+    const melody=[523,659,784,1047,784,659,523,659,784,1047,1319,1047];
+    melody.forEach((f,i)=>this._play(f,'triangle',.25,.35,i*.1));
+  },
+  yourTurn(){ this.init(); this._play(880,'sine',.12,.3); this._play(1100,'sine',.12,.3,.15); },
+};
+
+/* ══════════════════════════════════════
+   Card rendering
+══════════════════════════════════════ */
+function makeCard(card,idx=0,clickFn=null){
+  const ps=PROF[card.profession]||{g:'#ccc',icon:'🃏',tc:'#333'};
+  const div=document.createElement('div');
+  div.className='card card-deal';
+  div.style.animationDelay=`${idx*45}ms`;
+  if(card.isProtected){
+    const lock=document.createElement('div');
+    lock.className='card-lock'; lock.textContent='🔒';
+    div.appendChild(lock);
+  }
+  const face=document.createElement('div');
+  face.className='card-face';
+  face.style.background=ps.g;
+  // Top section
+  const top=document.createElement('div');
+  top.className='card-top';
+  top.innerHTML=`<div class="card-emoji">${ps.icon}</div><div class="card-prof-name">${card.profession}</div>`;
+  // Bottom
+  const bot=document.createElement('div');
+  bot.className='card-bottom';
+  bot.innerHTML=`<div class="card-member-name">${MEMBER_EMOJI[card.member]} ${card.member}</div>`;
+  face.appendChild(top); face.appendChild(bot);
+  div.appendChild(face);
+  if(clickFn) div.onclick=clickFn;
+  return div;
+}
+
+function makeMiniCard(card,clickFn){
+  const ps=PROF[card.profession]||{g:'#ccc',icon:'🃏',tc:'#333'};
+  const div=document.createElement('div');
+  div.className='mopt-card';
+  div.style.background=ps.g;
+  div.innerHTML=`
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:28px;">${ps.icon}</div>
+    <div style="background:rgba(0,0,0,0.55);padding:4px;text-align:center;">
+      <div style="font-size:12px;font-weight:900;color:#fff;">${MEMBER_EMOJI[card.member]} ${card.member}</div>
+    </div>`;
+  div.onclick=clickFn;
+  return div;
+}
+
+/* ══════════════════════════════════════
+   CARD / PLAYER CLASSES
+══════════════════════════════════════ */
+class Card{
+  constructor(p,m){this.profession=p;this.member=m;this.isProtected=false;}
+  toString(){return`[${this.profession}·${this.member}]`;}
+  toKey(){return`${this.profession}-${this.member}`;}
+}
+class Player{
+  constructor(name,isAI=false){
+    this.name=name;this.isAI=isAI;
+    this.hand=[];this.score=0;
+    this.families=[];this.familyData=[];
+    this.effects={skipTurn:0,cantAskMe:0,cantUseSkill:0,immuneSkill:0};
+    this.stats={asks:0,hits:0,skills:0};
+  }
+  sortHand(){
+    const pi=Object.fromEntries(PROFESSIONS.map((p,i)=>[p,i]));
+    const mi=Object.fromEntries(MEMBERS.map((m,i)=>[m,i]));
+    this.hand.sort((a,b)=>pi[a.profession]!==pi[b.profession]?pi[a.profession]-pi[b.profession]:mi[a.member]-mi[b.member]);
+  }
+  addCard(c){this.hand.push(c);this.sortHand();}
+  removeCard(prof,member){
+    const i=this.hand.findIndex(c=>c.profession===prof&&c.member===member);
+    if(i===-1) return null;
+    if(this.hand[i].isProtected) return 'PROTECTED';
+    return this.hand.splice(i,1)[0];
+  }
+  checkFamilies(){
+    const cnt={};
+    this.hand.forEach(c=>{cnt[c.profession]=(cnt[c.profession]||0)+1;});
+    const found=[];
+    for(const p in cnt){
+      if(cnt[p]===4){
+        found.push(p);this.score++;
+        this.families.push(p);
+        this.familyData.push({name:p,used:false});
+        this.hand=this.hand.filter(c=>c.profession!==p);
+      }
+    }
+    return found;
+  }
+  getAvailableSkills(){return this.familyData.filter(f=>!f.used).map(f=>f.name);}
+  decrementEffects(){for(const k in this.effects)if(this.effects[k]>0)this.effects[k]--;}
+}
+class AIPlayer extends Player{
+  constructor(name){
+    super(name,true);
+    this.knowledge=new Map();
+    this.confirmedCards=new Map();
+    this.playerHandSizes=new Map();
+  }
+  initializeKnowledge(all){
+    all.forEach(p=>{
+      this.knowledge.set(p.name,new Set());
+      this.confirmedCards.set(p.name,new Set());
+      this.playerHandSizes.set(p.name,p.hand.length);
+    });
+    all.forEach(p=>{if(p.name!==this.name)this.hand.forEach(c=>this.knowledge.get(p.name)?.add(c.toKey()));});
+  }
+  static broadcastUpdate(game,asker,target,prof,member,result,cardKey){
+    if(result==='PROTECTED') return;
+    if(result===true) game.lastSuccessfulAsk={asker:asker.name,target:target.name,prof};
+    else game.lastSuccessfulAsk=null;
+    game.players.forEach(p=>{
+      if(!p.isAI) return;
+      p.playerHandSizes.set(asker.name,asker.hand.length);
+      p.playerHandSizes.set(target.name,target.hand.length);
+      const rk=`${prof}-${member}`;
+      if(result===true&&cardKey){
+        p.knowledge.get(target.name)?.add(rk);
+        p.confirmedCards.get(target.name)?.delete(rk);
+        if(asker.name!==p.name) p.confirmedCards.get(asker.name)?.add(rk);
+      } else if(!result){
+        p.knowledge.get(target.name)?.add(rk);
+        p.confirmedCards.get(target.name)?.delete(rk);
+      }
+    });
+  }
+  chooseSkillAction(players,game){
+    const skills=this.getAvailableSkills();
+    if(!skills.length) return null;
+    const diff=game.difficulty;
+    const opp=players.filter(p=>p!==this);
+    const rich=opp.reduce((a,b)=>a.score>b.score?a:b);
+    const hasHand=opp.filter(p=>p.hand.length>0);
+    const bigHand=hasHand.length?hasHand.reduce((a,b)=>a.hand.length>b.hand.length?a:b):null;
+    const mc=this.hand.reduce((a,c)=>{a[c.profession]=(a[c.profession]||0)+1;return a;},{});
+    if(diff==='hard'&&skills.includes('消防員')){
+      const best=opp.filter(p=>p.getAvailableSkills().length>0).sort((a,b)=>b.score-a.score)[0];
+      if(best){const agg=['法官','厨師','總裁','明星','社工','稅務師'];const pick=best.getAvailableSkills().find(s=>agg.includes(s))||best.getAvailableSkills()[0];return{skillName:'消防員',params:{target:best,family:pick}};}
+    }
+    if(skills.includes('厨師')&&rich.score>0&&rich.score>=this.score){const used=rich.familyData.filter(f=>f.used);const pick=used.length?used[0]:rich.familyData[0];if(pick)return{skillName:'厨師',params:{target:rich,family:pick.name}};}
+    if(skills.includes('法官')&&rich.score>0&&rich.score>=this.score){const pick=rich.familyData.find(f=>f.used)||rich.familyData[0];if(pick)return{skillName:'法官',params:{target:rich,family:pick.name}};}
+    if(skills.includes('總裁'))return{skillName:'總裁'};
+    if(skills.includes('牧師'))return{skillName:'牧師'};
+    if(skills.includes('社工'))return{skillName:'社工'};
+    if(skills.includes('稅務師'))return{skillName:'稅務師'};
+    if(skills.includes('明星')){
+      const done=new Set();players.forEach(p=>p.families.forEach(f=>done.add(f)));
+      const avail=PROFESSIONS.filter(p=>!done.has(p));
+      const tp=Object.entries(mc).filter(([p])=>avail.includes(p)).sort((a,b)=>b[1]-a[1])[0]?.[0]||avail[0];
+      if(tp)return{skillName:'明星',params:{prof:tp}};
+    }
+    if(skills.includes('綁匪')&&bigHand)return{skillName:'綁匪',params:{target:bigHand}};
+    if(skills.includes('警察')&&bigHand){
+      const smart=diff==='hard'?opp.filter(p=>p.hand.length>0).sort((a,b)=>{const ac=[...(this.confirmedCards.get(a.name)||[])].length,bc=[...(this.confirmedCards.get(b.name)||[])].length;return bc-ac||b.hand.length-a.hand.length;})[0]:bigHand;
+      return{skillName:'警察',params:{target:smart||bigHand}};
+    }
+    if(skills.includes('律師')&&this.hand.length>0){const best=Object.entries(mc).sort((a,b)=>b[1]-a[1])[0];const card=best?this.hand.find(c=>c.profession===best[0]):this.hand[0];return{skillName:'律師',params:{card:card||this.hand[0]}};}
+    if(skills.includes('醫生')){const used=this.familyData.find(f=>f.used&&f.name!=='醫生');if(used)return{skillName:'醫生',params:{skill:used.name}};}
+    if(skills.includes('消防員')){const op=opp.find(p=>p.getAvailableSkills().length>0);if(op)return{skillName:'消防員',params:{target:op,family:op.getAvailableSkills()[0]}};}
+    const rest=skills.filter(s=>['記者','圖書管理員','保鏢','議員'].includes(s));
+    if(rest.length){const s=rest[0];if(s==='圖書管理員')return{skillName:s,params:{member:MEMBERS[Math.floor(Math.random()*MEMBERS.length)]}};return{skillName:s};}
+    return null;
+  }
+  chooseAction(players,game){
+    if(this.effects.cantUseSkill===0&&this.effects.skipTurn===0){
+      const prob=game.difficulty==='easy'?.3:game.difficulty==='normal'?.6:1;
+      if(Math.random()<prob){const sa=this.chooseSkillAction(players,game);if(sa)return{type:'skill',...sa};}
+    }
+    const mc=this.hand.reduce((a,c)=>{a[c.profession]=(a[c.profession]||0)+1;return a;},{});
+    const targets=players.filter(p=>p!==this&&p.hand.length>0&&p.effects.cantAskMe===0);
+    if(!targets.length) return null;
+    const actions=[];
+    for(const prof of Object.keys(mc).sort((a,b)=>mc[b]-mc[a])){
+      const have=this.hand.filter(c=>c.profession===prof).map(c=>c.member);
+      for(const member of MEMBERS.filter(m=>!have.includes(m))){
+        const ck=`${prof}-${member}`;
+        for(const t of targets){
+          const ex=this.knowledge.get(t.name)?.has(ck);
+          const cf=this.confirmedCards.get(t.name)?.has(ck);
+          let w=0;
+          if(game.lastSuccessfulAsk?.target===t.name&&game.lastSuccessfulAsk?.prof===prof)w+=50;
+          if(mc[prof]===3&&!cf&&!ex)w+=10;
+          if(game.difficulty==='hard'&&cf)w+=30;
+          actions.push({target:t,prof,member,ex,cf,hc:mc[prof],w});
+        }
+      }
+    }
+    if(!actions.length) return null;
+    actions.sort((a,b)=>a.cf!==b.cf?(a.cf?-1:1):b.w!==a.w?b.w-a.w:b.hc!==a.hc?b.hc-a.hc:a.ex!==b.ex?(a.ex?1:-1):Math.random()-.5);
+    return this.hand.length>0?{type:'ask',...actions[0]}:null;
+  }
+}
+
+/* ══════════════════════════════════════
+   GAME CLASS
+══════════════════════════════════════ */
+class HappyFamilyGame{
+  constructor(){
+    this.players=[];this.deck=[];
+    this.currentPlayerIdx=0;
+    this.lastSuccessfulAsk=null;
+    this.isFastForwarding=false;
+    this.turnAskFailed=false;
+    this.difficulty='easy';
+    this.turnCount=0;
+    this.gameStats={totalSkills:0};
+    this.el={
+      log:        document.getElementById('log-panel'),
+      statusBar:  document.getElementById('status-bar'),
+      turnBanner: document.getElementById('turn-banner'),
+      turnLabel:  document.getElementById('topbar-turn'),
+      playersPanel:document.getElementById('players-panel'),
+      handCards:  document.getElementById('hand-cards'),
+      handBadge:  document.getElementById('hand-count-badge'),
+      skillBar:   document.getElementById('skill-bar'),
+      skillBtns:  document.getElementById('skill-btns-row'),
+      target:     document.getElementById('sel-target'),
+      prof:       document.getElementById('sel-prof'),
+      member:     document.getElementById('sel-member'),
+      askBtn:     document.getElementById('ask-btn'),
+      endBtn:     document.getElementById('end-btn'),
+      resignBtn:  document.getElementById('resign-btn'),
+    };
+    this.el.prof.addEventListener('change',()=>this.updateMemberOpts());
+  }
+
+  /* ── start ── */
+  startGame(){
+    this.difficulty=difficulty;
+    showScreen('game');
+    Audio.init();
+    this.el.log.innerHTML='';
+    this.isFastForwarding=false;this.lastSuccessfulAsk=null;
+    this.turnAskFailed=false;this.turnCount=0;
+    this.gameStats={totalSkills:0};
+    this.el.resignBtn.style.display='inline-block';
+    this.log(`🎮 遊戲開始！難度：${this.difficulty==='easy'?'🌿入門':this.difficulty==='normal'?'⚡標準':'🔥困難'}`);
+    this.players=[new Player('你')];
+    ['小明','小華','小美'].forEach(n=>this.players.push(new AIPlayer(n)));
+    this.currentPlayerIdx=Math.floor(Math.random()*this.players.length);
+    this.deck=PROFESSIONS.flatMap(p=>MEMBERS.map(m=>new Card(p,m)));
+    for(let i=this.deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[this.deck[i],this.deck[j]]=[this.deck[j],this.deck[i]];}
+    while(this.deck.length>0)this.players.forEach(p=>{if(this.deck.length>0)p.addCard(this.deck.pop());});
+    this.players.filter(p=>p.isAI).forEach(ai=>ai.initializeKnowledge(this.players));
+    this.players.forEach(p=>p.checkFamilies());
+    this.updateUI();
+    this.turnLoop();
+  }
+
+  restartToMenu(){
+    document.getElementById('end-overlay').classList.remove('visible');
+    this.el.skillBar.classList.remove('visible');
+    this.el.resignBtn.style.display='none';
+    this.el.turnBanner.classList.remove('visible');
+    showScreen('menu');
+  }
+  resign(){if(!confirm('確定要認輸嗎？'))return;this.showWinner(true);}
+
+  /* ── Log ── */
+  log(msg,type='info',newTurn=false){
+    if(this.isFastForwarding)return;
+    if(newTurn){
+      const hr=document.createElement('hr');hr.className='log-div';this.el.log.appendChild(hr);
+      const lbl=document.createElement('p');lbl.className='log-turn';lbl.textContent=`── 第${this.turnCount}回合 ──`;this.el.log.appendChild(lbl);
+    }
+    const colors={success:'#1B5E20',fail:'#B71C1C',score:'#E65100',skill:'#4A148C',info:'#3E2723'};
+    const p=document.createElement('p');
+    p.innerHTML=`<span style="color:${colors[type]||'#3E2723'};font-weight:700;">${msg}</span>`;
+    this.el.log.appendChild(p);
+    this.el.log.scrollTop=this.el.log.scrollHeight;
+  }
+
+  /* ── UI ── */
+  updateUI(){
+    if(this.isFastForwarding)return;
+    const me=this.players[0];
+    this.el.turnLabel.textContent=`第 ${this.turnCount} 回合`;
+    const avatars=['👤','🤖','🤖','🤖'];
+    // Players panel
+    this.el.playersPanel.innerHTML='';
+    this.players.forEach((p,i)=>{
+      const div=document.createElement('div');
+      div.className=`pcard${i===this.currentPlayerIdx?' myturn':''}`;
+      const fx=[];
+      if(p.effects.skipTurn>0)     fx.push(`⛔停業${p.effects.skipTurn}`);
+      if(p.effects.cantAskMe>0)    fx.push(`🛡禁索${p.effects.cantAskMe}`);
+      if(p.effects.cantUseSkill>0) fx.push(`🔇禁技${p.effects.cantUseSkill}`);
+      if(p.effects.immuneSkill>0)  fx.push(`✨抗魔${p.effects.immuneSkill}`);
+      const fams=p.familyData.length
+        ?p.familyData.map(f=>`<span class="fam-pill${f.used?' used':''}" title="${SKILLS[f.name]?.name||''}: ${SKILLS[f.name]?.desc||''}">${PROF[f.name]?.icon||''} ${f.name}</span>`).join('')
+        :'<span style="font-size:11px;color:#aaa;">尚無家庭</span>';
+      div.innerHTML=`
+        <div class="pcard-top">
+          <div class="pcard-avatar">${avatars[i]||'👤'}</div>
+          <div>
+            <div class="pcard-name">${p.name}</div>
+            <div class="pcard-score">🏆 ${p.score} 組</div>
+          </div>
+        </div>
+        <div class="pcard-hand">🃏 手牌 ${p.hand.length} 張</div>
+        <div class="pcard-families">${fams}</div>
+        ${fx.length?`<div class="pcard-fx">${fx.join(' ')}</div>`:''}`;
+      this.el.playersPanel.appendChild(div);
+    });
+    // Hand
+    this.el.handCards.innerHTML='';
+    this.el.handBadge.textContent=`${me.hand.length} 張`;
+    me.hand.forEach((card,i)=>{
+      const el=makeCard(card,i,(e)=>this.showCardTip(e,card));
+      this.el.handCards.appendChild(el);
+    });
+  }
+
+  showCardTip(e,card){
+    const sk=SKILLS[card.profession];
+    const ps=PROF[card.profession];
+    const tip=document.getElementById('card-tip');
+    tip.innerHTML=`<h4>${ps?.icon||''} ${card.profession}</h4>
+      <hr style="margin:5px 0;border-color:#eee;">
+      <div class="sk">🔮 ${sk?.name||''}</div>
+      <div style="font-size:12px;color:#666;margin-top:3px;">${sk?.desc||''}</div>`;
+    const rect=e.currentTarget.getBoundingClientRect();
+    tip.style.top=Math.min(rect.bottom+window.scrollY+8, window.innerHeight-160)+'px';
+    tip.style.left=Math.max(8,Math.min(rect.left,window.innerWidth-215))+'px';
+    document.getElementById('card-tip-overlay').style.display='block';
+  }
+
+  /* ── Controls ── */
+  updateCtrl(mode){
+    const me=this.players[0];
+    const myTurn=(this.currentPlayerIdx===0);
+    this.el.skillBtns.innerHTML='';
+    const opp=this.players.filter(p=>p!==me&&p.hand.length>0&&p.effects.cantAskMe===0);
+
+    // Turn banner
+    if(myTurn&&!this.turnAskFailed&&me.effects.skipTurn===0&&me.hand.length>0&&opp.length>0&&mode==='start'){
+      this.el.turnBanner.classList.add('visible');
+    } else {
+      this.el.turnBanner.classList.remove('visible');
+    }
+
+    // Skills
+    if(myTurn&&me.effects.cantUseSkill===0&&me.effects.skipTurn===0){
+      const skills=me.getAvailableSkills();
+      if(skills.length){
+        this.el.skillBar.classList.add('visible');
+        skills.forEach(s=>{
+          const btn=document.createElement('button');
+          btn.className='sbtn';
+          btn.innerHTML=`<span class="sp-icon">${PROF[s]?.icon||'🔮'}</span>${SKILLS[s].name}<span class="stt">${SKILLS[s].desc}</span>`;
+          btn.onclick=()=>this.handleSkillClick(s);
+          this.el.skillBtns.appendChild(btn);
+        });
+      } else this.el.skillBar.classList.remove('visible');
+    } else this.el.skillBar.classList.remove('visible');
+
+    if(myTurn&&me.effects.skipTurn>0){
+      this.el.statusBar.innerHTML='⛔ 你被「停業整頓」，自動跳過回合…';
+      this.disableAsk();this.el.endBtn.disabled=true;
+      setTimeout(()=>this.nextTurn(),2000);return;
+    }
+    this.el.resignBtn.disabled=!myTurn;
+
+    if(this.turnAskFailed){
+      this.disableAsk();this.el.endBtn.disabled=false;
+      this.el.statusBar.innerHTML='❌ 索牌失敗！請結束回合或發動技能。';return;
+    }
+    if(mode==='start'||mode==='success'){
+      if(me.hand.length===0){
+        this.disableAsk();this.el.endBtn.disabled=false;
+        this.el.statusBar.innerHTML='⚠️ 手牌已空，請結束回合。';
+      } else if(opp.length){
+        this.el.target.disabled=false;this.el.prof.disabled=false;
+        this.el.member.disabled=false;this.el.askBtn.disabled=false;
+        this.el.endBtn.disabled=true;
+        this.el.statusBar.innerHTML=mode==='start'?'👉 輪到你了！選擇目標並索取卡牌。':'✅ 成功！可繼續索牌。';
+      } else {
+        this.disableAsk();this.el.endBtn.disabled=false;
+        this.el.statusBar.innerHTML='⚠️ 無可索牌對象，請結束回合。';
+      }
+    } else if(mode==='fail'){
+      this.disableAsk();this.el.endBtn.disabled=false;
+      this.el.statusBar.innerHTML='❌ 索牌失敗！請結束回合或發動技能。';
+    }
+    if(myTurn&&me.hand.length>0&&!this.turnAskFailed){
+      this.el.target.innerHTML=opp.map(p=>`<option value="${p.name}">${p.name} (${p.hand.length}張)</option>`).join('');
+      const myProfs=[...new Set(me.hand.map(c=>c.profession))];
+      this.el.prof.innerHTML=myProfs.map(p=>`<option value="${p}">${PROF[p]?.icon||''} ${p}</option>`).join('');
+      this.updateMemberOpts();
+    }
+  }
+  disableAsk(){this.el.target.disabled=true;this.el.prof.disabled=true;this.el.member.disabled=true;this.el.askBtn.disabled=true;}
+  updateMemberOpts(){
+    const me=this.players[0];
+    const prof=this.el.prof.value;if(!prof)return;
+    const have=me.hand.filter(c=>c.profession===prof).map(c=>c.member);
+    const miss=MEMBERS.filter(m=>!have.includes(m));
+    this.el.member.innerHTML=miss.map(m=>`<option value="${m}">${MEMBER_EMOJI[m]} ${m}</option>`).join('');
+  }
+
+  /* ── Turn loop ── */
+  turnLoop(){
+    const total=this.players.reduce((s,p)=>s+p.score,0);
+    if(total===PROFESSIONS.length){this.showWinner();return;}
+    const cur=this.players[this.currentPlayerIdx];
+    cur.decrementEffects();this.updateUI();
+    if(cur.effects.skipTurn>0){
+      if(!this.isFastForwarding)this.log(`🚫 ${cur.name} 停業中，跳過。`);
+      setTimeout(()=>this.nextTurn(),this.isFastForwarding?0:900);return;
+    }
+    if(cur.hand.length===0&&cur!==this.players[0]){
+      setTimeout(()=>this.nextTurn(),this.isFastForwarding?0:400);return;
+    }
+    if(this.currentPlayerIdx!==0){
+      setTimeout(()=>this.aiPlay(),this.isFastForwarding?0:150);
+    } else {
+      // Player's turn notification
+      if(!this.isFastForwarding){
+        Audio.yourTurn();
+        showYourTurnAnim();
+      }
+      this.updateCtrl('start');
+    }
+  }
+  aiPlay(){
+    const ai=this.players[this.currentPlayerIdx];
+    if(!ai||!ai.isAI)return;
+    const act=ai.chooseAction(this.players,this);
+    if(act?.type==='skill'){
+      this.executeSkill(ai,act.skillName,act.params||{});
+      setTimeout(()=>{
+        const ask=ai.chooseAction(this.players,this);
+        if(ask?.type==='ask')this.processRequest(ai,ask.target,ask.prof,ask.member);
+        else this.nextTurn();
+      },this.isFastForwarding?0:900);
+    } else if(act?.type==='ask'){
+      this.processRequest(ai,act.target,act.prof,act.member);
+    } else {
+      this.log(`⚠️ ${ai.name} 無法行動，結束回合。`);this.nextTurn();
+    }
+  }
+  nextTurn(){
+    if(this.players[0].hand.length===0&&!this.isFastForwarding){this.fastForward();return;}
+    if(this.isFastForwarding){this.turnLoop();return;}
+    this.lastSuccessfulAsk=null;this.turnAskFailed=false;
+    this.currentPlayerIdx=(this.currentPlayerIdx+1)%this.players.length;
+    this.turnCount++;
+    this.updateUI();
+    this.turnLoop();
+  }
+  fastForward(){
+    if(this.isFastForwarding)return;
+    this.isFastForwarding=true;
+    let loop=0,total=this.players.reduce((s,p)=>s+p.score,0);
+    while(total<PROFESSIONS.length&&loop<2000){
+      const cp=this.players[this.currentPlayerIdx];
+      if(cp.isAI&&cp.hand.length>0){
+        const act=cp.chooseAction(this.players,this);
+        if(act?.type==='ask'){
+          const card=act.target.removeCard(act.prof,act.member);
+          AIPlayer.broadcastUpdate(this,cp,act.target,act.prof,act.member,!!(card&&card!=='PROTECTED'),card&&card!=='PROTECTED'?card.toKey():null);
+          if(card&&card!=='PROTECTED'){cp.addCard(card);cp.checkFamilies();}
+          else this.currentPlayerIdx=(this.currentPlayerIdx+1)%this.players.length;
+        } else this.currentPlayerIdx=(this.currentPlayerIdx+1)%this.players.length;
+      } else this.currentPlayerIdx=(this.currentPlayerIdx+1)%this.players.length;
+      total=this.players.reduce((s,p)=>s+p.score,0);loop++;
+    }
+    this.showWinner();
+  }
+
+  /* ── Winner ── */
+  showWinner(){
+    Audio.win();
+    const sorted=[...this.players].sort((a,b)=>b.score-a.score);
+    const top=sorted[0];
+    const tied=sorted.filter(p=>p.score===top.score);
+    const me=this.players[0];
+    const medals=['🥇','🥈','🥉','4️⃣'];
+    document.getElementById('end-scores').innerHTML=sorted.map((p,i)=>`
+      <div class="srow${i===0?' winner':''}">
+        <span>${medals[i]||''} ${p.isAI?'🤖':'👤'} ${p.name}</span>
+        <span style="font-weight:900;">${p.score} 組</span>
+      </div>`).join('');
+    const title=tied.length>1?'🤝 平局！':top===me?'🎉 你贏了！':`🏆 ${top.name} 獲勝！`;
+    document.getElementById('end-title').textContent=title;
+    document.getElementById('end-trophy').textContent=tied.length>1?'🤝':top===me?'🥳':'🏆';
+    const myRate=me.stats.asks>0?Math.round(me.stats.hits/me.stats.asks*100):0;
+    document.getElementById('end-stats').innerHTML=`
+      <div class="sbox"><strong>${this.turnCount}</strong><span>總回合數</span></div>
+      <div class="sbox"><strong>${this.gameStats.totalSkills}</strong><span>技能使用次數</span></div>
+      <div class="sbox"><strong>${me.stats.asks}</strong><span>你的索牌次數</span></div>
+      <div class="sbox"><strong>${myRate}%</strong><span>你的命中率</span></div>`;
+    document.getElementById('end-overlay').classList.add('visible');
+    this.isFastForwarding=false;
+    this.disableAsk();this.el.endBtn.disabled=true;
+    this.el.resignBtn.style.display='none';
+    this.el.skillBar.classList.remove('visible');
+    this.el.turnBanner.classList.remove('visible');
+  }
+
+  /* ── Ask ── */
+  handleAsk(){
+    const target=this.players.find(p=>p.name===this.el.target.value);
+    const prof=this.el.prof.value,member=this.el.member.value;
+    Audio.flip();
+    this.disableAsk();this.el.endBtn.disabled=true;
+    this.el.statusBar.innerHTML='⏳ 等待結果…';
+    this.processRequest(this.players[0],target,prof,member);
+  }
+  processRequest(asker,target,prof,member){
+    const isAI=asker.isAI;
+    const delay=this.isFastForwarding?0:(isAI?900:500);
+    if(!this.isFastForwarding)this.log(`🗣️ ${asker.name} 問 ${target.name}：有 [${PROF[prof]?.icon||''}${prof}·${MEMBER_EMOJI[member]||''}${member}] 嗎？`);
+    asker.stats.asks++;
+    setTimeout(()=>{
+      const card=target.removeCard(prof,member);
+      if(card==='PROTECTED'){
+        if(!this.isFastForwarding){Audio.fail();this.log(`⚖️ ${target.name} 的牌受法律保護！`,'fail');}
+        this.handleFail(asker,target,prof,member,delay);
+      } else if(card){
+        asker.stats.hits++;
+        if(!this.isFastForwarding){Audio.success();this.log(`✅ 成功！${target.name} 交出了 ${card.toString()}。`,'success');}
+        asker.addCard(card);
+        AIPlayer.broadcastUpdate(this,asker,target,prof,member,true,card.toKey());
+        const found=asker.checkFamilies();
+        if(found.length&&!this.isFastForwarding){
+          Audio.score();
+          found.forEach(f=>{
+            this.log(`🎉 ${asker.name} 集齊了 [${PROF[f]?.icon||''}${f}] 一家！`,'score');
+            if(asker===this.players[0])showToast(`🎉 集齊了 ${PROF[f]?.icon||''}${f} 家庭！`,2500);
+          });
+        }
+        this.updateUI();
+        const total=this.players.reduce((s,p)=>s+p.score,0);
+        if(total===PROFESSIONS.length){this.showWinner();return;}
+        if(asker.hand.length===0){
+          if(isAI)setTimeout(()=>this.nextTurn(),delay);
+          else if(!this.isFastForwarding)this.updateCtrl('success');
+        } else if(isAI){setTimeout(()=>this.aiPlay(),delay);}
+        else if(!this.isFastForwarding)this.updateCtrl('success');
+      } else {
+        if(!this.isFastForwarding){Audio.fail();this.log(`❌ 失敗！${target.name} 沒有這張牌。`,'fail');}
+        this.handleFail(asker,target,prof,member,delay);
+      }
+    },delay);
+  }
+  handleFail(asker,target,prof,member,delay){
+    if(asker===this.players[0])this.turnAskFailed=true;
+    AIPlayer.broadcastUpdate(this,asker,target,prof,member,false,null);
+    if(asker.isAI)setTimeout(()=>this.nextTurn(),delay);
+    else if(!this.isFastForwarding)this.updateCtrl('fail');
+  }
+
+  /* ══════════════════════════════════
+     SKILLS
+  ══════════════════════════════════ */
+  handleSkillClick(s){
+    const type=SKILLS[s].type;
+    const me=this.players[0];
+    const opp=this.players.filter(p=>p!==me);
+    const showOpp=(desc,filter,then)=>{
+      this.showModal(`${PROF[s]?.icon||'🔮'} ${SKILLS[s].name}`,desc,
+        opp.filter(filter).map(p=>({text:`${p.name} (${p.score}組, ${p.hand.length}張)`,onClick:()=>then(p)})));
+    };
+    if(type==='target_player_family_remove'||type==='target_steal_family'){
+      showOpp('選擇目標玩家',p=>p.familyData.length>0,p=>this.showFamilyModal(s,p));
+    } else if(type==='target_player_family_disable'){
+      showOpp('選擇要澆熄技能的對手',p=>p.getAvailableSkills().length>0,p=>{
+        if(!p.getAvailableSkills().length){showToast('該玩家沒有可用技能！');return;}
+        this.showDisableModal(s,p);
+      });
+    } else if(type==='target_steal_random'){
+      showOpp('選擇偷牌對象',p=>p.hand.length>0,p=>this.executeSkill(me,s,{target:p}));
+    } else if(type==='target_peek_steal'){
+      showOpp('選擇查看對象',p=>p.hand.length>0,p=>this.showPeekModal(me,s,p));
+    } else if(type==='self_protect_card'){
+      this.showCardPickModal(me,s);
+    } else if(type==='self_restore_skill'){
+      const used=me.familyData.filter(f=>f.used);
+      if(!used.length){showToast('沒有已使用的技能！');return;}
+      this.showModal(`💊 ${SKILLS[s].name}`,'選擇要恢復的技能',
+        used.map(f=>({text:`${PROF[f.name]?.icon||''} ${f.name}（${SKILLS[f.name].name}）`,onClick:()=>this.executeSkill(me,s,{skill:f.name})})));
+    } else if(type==='ask_all_prof'){
+      const done=new Set();this.players.forEach(p=>p.families.forEach(f=>done.add(f)));
+      const avail=PROFESSIONS.filter(p=>!done.has(p));
+      this.showModal(`⭐ 一呼百應`,'選擇職業（限未完成家庭）',
+        avail.map(p=>({text:`${PROF[p]?.icon||''} ${p}`,onClick:()=>this.executeSkill(me,s,{prof:p})})));
+    } else if(type==='ask_all_member'){
+      this.showModal(`📚 資料彙整`,'選擇家庭成員',
+        MEMBERS.map(m=>({text:`${MEMBER_EMOJI[m]} ${m}`,onClick:()=>this.executeSkill(me,s,{member:m})})));
+    } else {
+      if(confirm(`確定發動「${SKILLS[s].name}」？\n${SKILLS[s].desc}`))
+        this.executeSkill(me,s);
+    }
+  }
+  showFamilyModal(sn,target){
+    this.showModal('選擇目標家庭',`對象：${target.name}`,
+      target.familyData.map(f=>({text:`${PROF[f.name]?.icon||''} ${f.name}${f.used?' (已用)':''}`,onClick:()=>this.executeSkill(this.players[0],sn,{target,family:f.name})})));
+  }
+  showDisableModal(sn,target){
+    this.showModal('選擇要取消的技能',`對象：${target.name}`,
+      target.getAvailableSkills().map(s=>({text:`${PROF[s]?.icon||''} ${s}（${SKILLS[s].name}）`,onClick:()=>this.executeSkill(this.players[0],sn,{target,family:s})})));
+  }
+  showCardPickModal(player,sn){
+    const avail=player.hand.filter(c=>!c.isProtected);
+    if(!avail.length){showToast('沒有可保護的手牌！');return;}
+    const modal=document.getElementById('modal-box');
+    document.getElementById('modal-title').textContent=`⚖️ 選擇保護卡牌`;
+    document.getElementById('modal-desc').textContent='此牌將無法被他人索取';
+    document.getElementById('modal-body').innerHTML='';
+    const opts=document.getElementById('modal-opts');
+    opts.innerHTML='';
+    avail.forEach(c=>{
+      const el=makeMiniCard(c,()=>{closeModal();this.executeSkill(player,sn,{card:c});});
+      opts.appendChild(el);
+    });
+    document.getElementById('modal-overlay').classList.add('visible');
+  }
+  showPeekModal(asker,sn,target){
+    let pool=[...target.hand];
+    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+    const peeked=pool.slice(0,Math.min(3,pool.length));
+    document.getElementById('modal-title').textContent=`👮 人贓並獲`;
+    document.getElementById('modal-desc').textContent=`${target.name} 的手牌（點擊奪取）`;
+    document.getElementById('modal-body').innerHTML='';
+    const opts=document.getElementById('modal-opts');opts.innerHTML='';
+    peeked.forEach(c=>{
+      const el=makeMiniCard(c,()=>{closeModal();this.executeSkill(asker,sn,{target,card:c});});
+      opts.appendChild(el);
+    });
+    document.getElementById('modal-overlay').classList.add('visible');
+  }
+  showModal(title,desc,opts){
+    document.getElementById('modal-title').textContent=title;
+    document.getElementById('modal-desc').textContent=desc;
+    document.getElementById('modal-body').innerHTML='';
+    const c=document.getElementById('modal-opts');c.innerHTML='';
+    opts.forEach(o=>{
+      const btn=document.createElement('div');btn.className='mopt';btn.textContent=o.text;
+      btn.onclick=()=>{closeModal();o.onClick();};
+      c.appendChild(btn);
+    });
+    document.getElementById('modal-overlay').classList.add('visible');
+  }
+
+  /* ── Execute Skill ── */
+  executeSkill(user,sn,params={}){
+    if(!this.isFastForwarding){
+      this.log(`⚡ ${user.name} 發動了 [${SKILLS[sn].name}]！`,'skill');
+      Audio.skill();
+      if(!user.isAI) flashSkill(sn);
+    }
+    const fo=user.familyData.find(f=>f.name===sn);if(fo)fo.used=true;
+    this.gameStats.totalSkills++;user.stats.skills++;
+    const opp=this.players.filter(p=>p!==user);
+    const immune=p=>p.effects.immuneSkill>0;
+
+    switch(sn){
+      case '法官':
+        if(params.target&&!immune(params.target)){
+          const i=params.target.familyData.findIndex(f=>f.name===params.family);
+          if(i>-1){params.target.familyData.splice(i,1);params.target.families=params.target.familyData.map(f=>f.name);params.target.score--;
+          if(!this.isFastForwarding){this.log(`⚖️ ${params.target.name} 的 [${params.family}] 被裁決移除！`,'fail');showToast(`⚖️ 移除了 ${params.target.name} 的家庭！`);}}
+        } else if(params.target){this.log(`🛡️ ${params.target.name} 免疫技能！`);}
+        break;
+      case '厨師':
+        if(params.target&&!immune(params.target)){
+          const i=params.target.familyData.findIndex(f=>f.name===params.family);
+          if(i>-1){const st=params.target.familyData.splice(i,1)[0];params.target.families=params.target.familyData.map(f=>f.name);params.target.score--;st.used=false;user.familyData.push(st);user.families.push(st.name);user.score++;
+          if(!this.isFastForwarding){Audio.score();this.log(`🍽️ ${user.name} 奪取了 ${params.target.name} 的 [${params.family}] 家庭！`,'success');showToast(`🍽️ 奪取成功！`);}}
+        } else if(params.target)this.log(`🛡️ ${params.target.name} 免疫！`);
+        break;
+      case '總裁':
+        opp.forEach(p=>{if(!immune(p))p.effects.skipTurn=EFFECT_DUR.skipTurn;});
+        this.log(`🛑 所有對手停業 ${EFFECT_DUR.skipTurn} 回合。`);
+        if(!this.isFastForwarding)showToast(`🛑 對手全部停業！`);
+        break;
+      case '牧師':
+        opp.forEach(p=>{if(!immune(p))p.effects.cantUseSkill=EFFECT_DUR.cantUseSkill;});
+        this.log(`✝️ 所有對手 ${EFFECT_DUR.cantUseSkill} 回合無法使用技能。`);
+        break;
+      case '議員':
+        user.effects.cantAskMe=EFFECT_DUR.cantAskMe;
+        this.log(`📢 ${user.name} 獲地方自治，${EFFECT_DUR.cantAskMe} 回合不能被索牌。`);
+        break;
+      case '保鏢':
+        user.effects.immuneSkill=EFFECT_DUR.immuneSkill;
+        this.log(`🛡️ ${user.name} 獲忠誠守衛，${EFFECT_DUR.immuneSkill} 回合免疫技能。`);
+        break;
+      case '綁匪':
+        if(params.target&&params.target.hand.length>0&&!immune(params.target)){
+          const r=Math.floor(Math.random()*params.target.hand.length);
+          const c=params.target.hand.splice(r,1)[0];
+          user.addCard(c);this.log(`🔫 偷走了 ${params.target.name} 的一張牌。`);
+          if(!this.isFastForwarding){Audio.steal();showToast(`🔫 偷牌成功！`);}
+          AIPlayer.broadcastUpdate(this,user,params.target,c.profession,c.member,true,c.toKey());
+          user.checkFamilies();
+        } else if(params.target&&immune(params.target))this.log(`🛡️ ${params.target.name} 免疫！`);
+        else this.log(`❌ 偷取失敗（目標無牌）。`);
+        break;
+      case '警察':
+        if(user.isAI&&!params.card&&params.target){
+          let pool=[...params.target.hand];for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+          const peeked=pool.slice(0,Math.min(3,pool.length));
+          const mc=user.hand.reduce((a,c)=>{a[c.profession]=(a[c.profession]||0)+1;return a;},{});
+          params.card=peeked.sort((a,b)=>(mc[b.profession]||0)-(mc[a.profession]||0))[0];
+        }
+        if(params.target&&params.card&&!immune(params.target)){
+          const st=params.target.removeCard(params.card.profession,params.card.member);
+          if(st&&st!=='PROTECTED'){user.addCard(st);this.log(`👮 沒收了 ${st.toString()}。`);if(!this.isFastForwarding){Audio.steal();showToast(`👮 沒收成功！`);}AIPlayer.broadcastUpdate(this,user,params.target,st.profession,st.member,true,st.toKey());user.checkFamilies();}
+          else this.log('❌ 奪取失敗（受保護）。');
+        } else if(params.target&&immune(params.target))this.log(`🛡️ ${params.target.name} 免疫！`);
+        break;
+      case '律師':
+        if(params.card){params.card.isProtected=true;this.log(`⚖️ ${params.card.toString()} 受法律保護。`);if(!this.isFastForwarding)showToast(`⚖️ 卡牌已受保護！`);}
+        break;
+      case '稅務師':
+        opp.forEach(p=>{if(p.hand.length>0&&!immune(p)){const r=Math.floor(Math.random()*p.hand.length);const c=p.hand.splice(r,1)[0];user.addCard(c);this.log(`💰 ${p.name} 上繳了一張牌。`);AIPlayer.broadcastUpdate(this,user,p,c.profession,c.member,true,c.toKey());}else if(p.hand.length>0)this.log(`🛡️ ${p.name} 免疫，未上繳。`);});
+        user.checkFamilies();if(!this.isFastForwarding)showToast(`💰 稅務查核完成！`);
+        break;
+      case '醫生':
+        if(params.skill){const f=user.familyData.find(fam=>fam.name===params.skill);if(f){f.used=false;this.log(`💊 [${SKILLS[params.skill].name}] 技能已重置。`);if(!this.isFastForwarding)showToast(`💊 技能恢復！`);}}
+        break;
+      case '社工':{
+        const all=[];opp.forEach(p=>{if(!immune(p)){p.hand.forEach(c=>c.isProtected=false);all.push(...p.hand);p.hand=[];}});
+        for(let i=all.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[all[i],all[j]]=[all[j],all[i]];}
+        const elig=opp.filter(p=>!immune(p));let ci=0;
+        while(all.length>0){elig[ci%elig.length].addCard(all.pop());ci++;}
+        this.log(`🤝 對手手牌已重新隨機分配。`);
+        this.players.filter(p=>p.isAI).forEach(ai=>ai.initializeKnowledge(this.players));
+        if(!this.isFastForwarding)showToast(`🤝 家庭重置完成！`);
+        break;}
+      case '明星':{
+        const done=new Set();this.players.forEach(p=>p.families.forEach(f=>done.add(f)));
+        const avail=PROFESSIONS.filter(p=>!done.has(p));
+        let tp=params.prof;
+        if(user.isAI&&!tp&&avail.length>0){const mc=user.hand.reduce((a,c)=>{a[c.profession]=(a[c.profession]||0)+1;return a;},{});tp=avail.filter(p=>mc[p]).sort((a,b)=>(mc[b]||0)-(mc[a]||0))[0]||avail[Math.floor(Math.random()*avail.length)];}
+        if(tp&&avail.includes(tp)){if(user.isAI)this.log(`🌟 明星召集 ${tp} 家族！`);
+          opp.forEach(p=>{if(!immune(p)){const ms=p.hand.filter(c=>c.profession===tp);ms.forEach(c=>{const s=p.removeCard(c.profession,c.member);if(s&&s!=='PROTECTED')user.addCard(s);});}});
+          user.checkFamilies();if(!this.isFastForwarding)showToast(`🌟 一呼百應！`);}
+        else this.log(`🌟 無人回應...`);
+        break;}
+      case '圖書管理員':
+        opp.forEach(p=>{if(!immune(p)){const ms=p.hand.filter(c=>c.member===params.member);if(ms.length){const s=p.removeCard(ms[0].profession,ms[0].member);if(s&&s!=='PROTECTED')user.addCard(s);}}});
+        user.checkFamilies();this.log(`📚 資料彙整（${MEMBER_EMOJI[params.member]}${params.member}）完畢。`);
+        break;
+      case '消防員':
+        if(params.target&&params.family){
+          if(immune(params.target)){this.log(`🛡️ ${params.target.name} 免疫，消防員無效。`);if(fo)fo.used=false;}
+          else{const f=params.target.familyData.find(fam=>fam.name===params.family);if(f){f.used=true;this.log(`🚒 ${params.target.name} 的 [${params.family}] 技能被澆熄！`,'fail');if(!this.isFastForwarding)showToast(`🚒 技能澆熄！`);}}
+        }
+        break;
+      case '記者':
+        opp.forEach(p=>{if(p.hand.length>0&&!immune(p)){const c=p.hand[Math.floor(Math.random()*p.hand.length)];const ck=c.toKey();this.log(`📰 獨家：${p.name} 有 ${c.toString()}`);this.players.filter(ai=>ai.isAI).forEach(ai=>{ai.confirmedCards.get(p.name)?.add(ck);ai.knowledge.get(p.name)?.delete(ck);});}});
+        break;
+    }
+    this.updateUI();
+    if(!user.isAI)this.updateCtrl('start');
+  }
+}
+
+const game=new HappyFamilyGame();
+</script>
+</body>
+</html>
